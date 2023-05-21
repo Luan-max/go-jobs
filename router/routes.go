@@ -14,11 +14,7 @@ func initializeRoutes(router *gin.Engine) {
 				"message": "Deu bom mano",
 			})
 		})
-		v1.POST("/jobs", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Deu bom mano",
-			})
-		})
+		// v1.POST("/jobs", handler.CreateJobHandler)
 		v1.PUT("/jobs", func(ctx *gin.Context) {
 			ctx.JSON(http.StatusOK, gin.H{
 				"message": "Deu bom mano",
