@@ -1,29 +1,17 @@
 package router
 
 import (
-	"net/http"
+	"github.com/Luan-max/go-jobs/handler"
 
 	"github.com/gin-gonic/gin"
 )
 
 func initializeRoutes(router *gin.Engine) {
+
+	handler.InitHandler()
+
 	v1 := router.Group("/api/v1")
 	{
-		v1.GET("/jobs", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Deu bom mano",
-			})
-		})
-		// v1.POST("/jobs", handler.CreateJobHandler)
-		v1.PUT("/jobs", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Deu bom mano",
-			})
-		})
-		v1.DELETE("/jobs", func(ctx *gin.Context) {
-			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Deu bom mano",
-			})
-		})
+		v1.POST("/jobs", handler.CreateJobHandler)
 	}
 }
