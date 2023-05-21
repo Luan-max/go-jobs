@@ -1,5 +1,9 @@
 package handler
 
-func CreateJobHandler() {
+import (
+	"github.com/gin-gonic/gin"
+)
+
+func CreateJobHandler(*gin.Context) {
 
 }
