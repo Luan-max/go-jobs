@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath /api/v1
+
+// @Summary Delete job
+// @Description Delete ajob
+// @Tags Jobs
+// @Accept json
+// @Produce json
+// @Param id query string true "Job ID"
+// @Success 204 {object} DeleteJobResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Router /job [delete]
+
 func DeleteJobHandler(ctx *gin.Context) {
 	id := ctx.Query("id")
 

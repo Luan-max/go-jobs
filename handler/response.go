@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 
+	"github.com/Luan-max/go-jobs/schemas"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,4 +22,21 @@ func sendSuccess(ctx *gin.Context, op string, data interface{}, code int) {
 		"data":    data,
 		"code":    code,
 	})
+}
+
+type ErrorResponse struct {
+	Message   string `json:"message"`
+	ErrorCode string `json:"errorCode"`
+}
+
+type CreateJobResponse struct {
+	Message string              `json:"message"`
+	Data    schemas.JobResponse `json:"data"`
+	Code    string              `json:"code"`
+}
+
+type DeleteJobResponse struct {
+	Message string              `json:"message"`
+	Data    schemas.JobResponse `json:"data"`
+	Code    string              `json:"code"`
 }

@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @BasePath /api/v1
+
+// @Summary Create job
+// @Description Create a new job
+// @Tags Jobs
+// @Accept json
+// @Produce json
+// @Param request body CreateJobRequest true "Request body"
+// @Success 201 {object} CreateJobResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /job [post]
+
 func CreateJobHandler(ctx *gin.Context) {
 	request := CreateJobRequest{}
 

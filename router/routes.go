@@ -15,9 +15,9 @@ func initializeRoutes(router *gin.Engine) {
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := router.Group("/api/v1")
 	{
-		v1.POST("/jobs", handler.CreateJobHandler)
-		v1.DELETE("/jobs", handler.DeleteJobHandler)
+		v1.POST("/job", handler.CreateJobHandler)
+		v1.DELETE("/job", handler.DeleteJobHandler)
 	}
 
-	router.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
