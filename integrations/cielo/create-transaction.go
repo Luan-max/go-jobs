@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/Luan-max/go-jobs/config"
 
@@ -22,11 +23,11 @@ func CreateCardToken(card dtos.CreditCardDto) (dtos.CardAPIResponse, error) {
 		return dtos.CardAPIResponse{}, errors.New("Error marshaling JSON request body: " + err.Error())
 	}
 
-	BASE_URL := "https://apisandbox.cieloecommerce.cielo.com.br/"
+	BASE_URL := os.Getenv("CIELO_URL")
 
 	headers := map[string]string{
-		"MerchantKey":  "IBGUQWMMADBYBRJJZXTGRFSREJOBNVBNHBYOHNFT",
-		"MerchantId":   "aebe297b-17fa-4966-9d12-b75057bcb8fc",
+		"MerchantKey":  os.Getenv("MERCHANT_KEY"),
+		"MerchantId":   os.Getenv("MERCHANT_ID"),
 		"Content-Type": "application/json",
 	}
 
@@ -48,7 +49,7 @@ func CreateCardToken(card dtos.CreditCardDto) (dtos.CardAPIResponse, error) {
 		return dtos.CardAPIResponse{}, errors.New("Error reading response body: " + err.Error())
 	}
 
-	logger.Infof("CIELO:\n", string(body))
+	logger.Infof("CIELO:\n%s", string(body))
 
 	var response dtos.CardAPIResponse
 	err = json.Unmarshal(body, &response)

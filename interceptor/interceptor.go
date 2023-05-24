@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,8 +53,10 @@ func readBody(body io.Reader) string {
 // Função auxiliar para criptografar o corpo.
 func encryptBody(body []byte) ([]byte, error) {
 
+	secret := os.Getenv("SECRET")
+
 	// Chave de criptografia
-	key := []byte("jobsstudy1234567")
+	key := []byte(secret)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {

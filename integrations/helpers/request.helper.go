@@ -18,7 +18,7 @@ const (
 func JSONRequest(method HttpMethod, url string, body []byte, headers map[string]string) (*http.Request, error) {
 	switch method {
 	case GET, POST, PUT, DELETE:
-		req, err := http.NewRequest(string(method), url, bytes.NewBuffer(body))
+		req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
 		if err != nil {
 			return nil, errors.New(err.Error())
 		}
@@ -29,6 +29,6 @@ func JSONRequest(method HttpMethod, url string, body []byte, headers map[string]
 
 		return req, nil
 	default:
-		return nil, errors.New(string(method) + " is not a valid HTTP method")
+		return nil, errors.New(string(method) + "is not a valid HTTP method")
 	}
 }

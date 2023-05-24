@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/Luan-max/go-jobs/integrations/cielo"
 	cieloDTO "github.com/Luan-max/go-jobs/integrations/cielo/dtos"
@@ -59,7 +60,7 @@ func CreateTransactionHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.BindJSON(&request)
+	ctx.ShouldBindJSON(&request)
 
 	if err := request.Validate(); err != nil {
 		logger.Errf("error validate request: %v", err.Error())
@@ -105,7 +106,9 @@ func CreateTransactionHandler(ctx *gin.Context) {
 
 func decryptBody(encryptedBody []byte) ([]byte, error) {
 
-	key := []byte("jobsstudy1234567")
+	secret := os.Getenv("SECRET")
+
+	key := []byte(secret)
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
