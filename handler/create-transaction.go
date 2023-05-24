@@ -5,11 +5,16 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
+	"github.com/Luan-max/go-jobs/integrations/cielo"
+	cieloDTO "github.com/Luan-max/go-jobs/integrations/cielo/dtos"
+
 	"github.com/Luan-max/go-jobs/schemas"
 
+	dtos "github.com/Luan-max/go-jobs/dtos"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +31,13 @@ import (
 // @Failure 500 {object} ErrorResponse
 // @Router /job [post]
 
-func CreateJobHandler(ctx *gin.Context) {
-	request := CreateJobRequest{}
+type Response struct {
+	Response    cieloDTO.CardAPIResponse
+	Transaction schemas.Transaction
+}
+
+func CreateTransactionHandler(ctx *gin.Context) {
+	request := dtos.CreateTransactionDTO{}
 
 	encryptedBody, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
@@ -43,7 +53,6 @@ func CreateJobHandler(ctx *gin.Context) {
 		return
 	}
 
-	// BindJSON para ler os dados descriptografados
 	if err := json.Unmarshal(decryptedBody, &request); err != nil {
 		logger.Errf("error unmarshaling request body: %v", err.Error())
 		sendError(ctx, http.StatusBadRequest, "error unmarshaling request body")
@@ -58,22 +67,40 @@ func CreateJobHandler(ctx *gin.Context) {
 		return
 	}
 
-	job := schemas.Job{
-		Title:       request.Title,
-		Company:     request.Company,
-		Benefits:    request.Benefits,
-		Remote:      *request.Remote,
-		Link:        request.Link,
-		Description: request.Description,
+	transaction := schemas.Transaction{
+		CardNumber: request.CardNumber,
+		Brand:      request.CardBrand,
+		Month:      request.ExpirationMonth,
+		Year:       request.ExpirationYear,
 	}
 
-	if err := db.Create(&job).Error; err != nil {
-		logger.Errf("error create job: %v", err.Error())
-		sendError(ctx, http.StatusInternalServerError, "error create job in database")
+	card := cieloDTO.CreditCardDto{
+		CustomerName:   "Luan",
+		CardNumber:     request.CardNumber,
+		Holder:         "Comprador T Cielo",
+		ExpirationDate: fmt.Sprintf("%s/%s", request.ExpirationMonth, request.ExpirationYear),
+		Brand:          request.CardBrand,
+	}
+
+	response, err := cielo.CreateCardToken(card)
+	if err != nil {
+		logger.Errf("error creating card token: %v", err.Error())
+		sendError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	sendSuccess(ctx, "create-job", job, http.StatusCreated)
+	if err := db.Create(&transaction).Error; err != nil {
+		logger.Errf("error create transaction: %v", err.Error())
+		sendError(ctx, http.StatusInternalServerError, "error save transaction in database")
+		return
+	}
+
+	obj := Response{
+		Response:    response,
+		Transaction: transaction,
+	}
+
+	sendSuccess(ctx, "transaction processed", obj, http.StatusCreated)
 }
 
 func decryptBody(encryptedBody []byte) ([]byte, error) {

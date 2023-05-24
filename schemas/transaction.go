@@ -6,15 +6,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Job struct {
+type Transaction struct {
 	gorm.Model
-	Title       string
-	Company     string
-	Description string
-	Remote      bool
-	Link        string
-	Salary      string
-	Benefits    string
+	CardNumber string
+	Brand      string
+	Month      string
+	Year       string
 }
 
 type JobResponse struct {

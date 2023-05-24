@@ -17,8 +17,7 @@ func initializeRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{
 		v1.Use(interceptor.EncryptInterceptor())
-		v1.POST("/job", handler.CreateJobHandler)
-		v1.DELETE("/job", handler.DeleteJobHandler)
+		v1.POST("/transaction", handler.CreateTransactionHandler)
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

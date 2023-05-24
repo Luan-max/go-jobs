@@ -9,6 +9,7 @@ import (
 
 func sendError(ctx *gin.Context, code int, msg string) {
 	ctx.Header("Content-type", "application/json")
+	ctx.Status(code)
 	ctx.JSON(code, gin.H{
 		"message":   msg,
 		"errorCode": code,
@@ -17,8 +18,9 @@ func sendError(ctx *gin.Context, code int, msg string) {
 
 func sendSuccess(ctx *gin.Context, op string, data interface{}, code int) {
 	ctx.Header("Content-type", "application/json")
+	ctx.Status(code)
 	ctx.JSON(code, gin.H{
-		"message": fmt.Sprint("operation from handler: %s", op),
+		"message": fmt.Sprintf("operation from handler: %s successfull", op),
 		"data":    data,
 		"code":    code,
 	})
