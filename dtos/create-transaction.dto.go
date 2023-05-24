@@ -8,6 +8,7 @@ type CreateTransactionDTO struct {
 	ExpirationMonth string `json:"month" validate:"required"`
 	ExpirationYear  string `json:"year" validate:"required"`
 	CardBrand       string `json:"brand" validate:"required"`
+	Holder          string `json:"holder" validate:"required"`
 }
 
 func (r *CreateTransactionDTO) Validate() error {
@@ -26,6 +27,10 @@ func (r *CreateTransactionDTO) Validate() error {
 	if r.CardBrand == "" {
 		return validatePropsIsRequire("brand", "string")
 	}
+	if r.Holder == "" {
+		return validatePropsIsRequire("holder", "string")
+	}
+
 	return nil
 }
 

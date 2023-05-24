@@ -19,19 +19,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @BasePath /api/v1
-
-// @Summary Create job
-// @Description Create a new job
-// @Tags Jobs
-// @Accept json
-// @Produce json
-// @Param request body CreateJobRequest true "Request body"
-// @Success 201 {object} CreateJobResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Router /job [post]
-
 type Response struct {
 	Response    cieloDTO.CardAPIResponse
 	Transaction schemas.Transaction
@@ -73,12 +60,13 @@ func CreateTransactionHandler(ctx *gin.Context) {
 		Brand:      request.CardBrand,
 		Month:      request.ExpirationMonth,
 		Year:       request.ExpirationYear,
+		Holder:     request.Holder,
 	}
 
 	card := cieloDTO.CreditCardDto{
-		CustomerName:   "Luan",
+		CustomerName:   request.Holder,
 		CardNumber:     request.CardNumber,
-		Holder:         "Comprador T Cielo",
+		Holder:         request.Holder,
 		ExpirationDate: fmt.Sprintf("%s/%s", request.ExpirationMonth, request.ExpirationYear),
 		Brand:          request.CardBrand,
 	}

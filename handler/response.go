@@ -31,14 +31,8 @@ type ErrorResponse struct {
 	ErrorCode string `json:"errorCode"`
 }
 
-type CreateJobResponse struct {
-	Message string              `json:"message"`
-	Data    schemas.JobResponse `json:"data"`
-	Code    string              `json:"code"`
-}
-
-type DeleteJobResponse struct {
-	Message string              `json:"message"`
-	Data    schemas.JobResponse `json:"data"`
-	Code    string              `json:"code"`
+type CreateTransactionResponse struct {
+	Message string                      `json:"message"`
+	Data    schemas.TransactionResponse `json:"data"`
+	Code    string                      `json:"code"`
 }
