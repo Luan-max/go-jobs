@@ -1,16 +1,19 @@
-package config
+package database
 
 import (
 	"os"
 
-	"github.com/Luan-max/go-jobs/schemas"
+	"github.com/Luan-max/go-jobs/application/schemas"
+	"github.com/Luan-max/go-jobs/infra/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func InitializeSQLite() (*gorm.DB, error) {
-	logger := GetLogger("sqlite")
+	logger := config.GetLogger("sqlite")
+
 	dbPath := "./db/main.db"
+
 	_, err := os.Stat(dbPath)
 	if os.IsNotExist(err) {
 		logger.Info("database file not found, creating...")

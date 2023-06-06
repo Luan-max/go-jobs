@@ -1,21 +1,18 @@
 package handler
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
-	"github.com/Luan-max/go-jobs/integrations/cielo"
-	cieloDTO "github.com/Luan-max/go-jobs/integrations/cielo/dtos"
+	"github.com/Luan-max/go-jobs/application/integrations/cielo"
+	cieloDTO "github.com/Luan-max/go-jobs/application/integrations/cielo/dtos"
+	"github.com/Luan-max/go-jobs/application/integrations/helpers"
 
-	"github.com/Luan-max/go-jobs/schemas"
+	"github.com/Luan-max/go-jobs/application/schemas"
 
-	dtos "github.com/Luan-max/go-jobs/dtos"
+	dtos "github.com/Luan-max/go-jobs/application/dtos"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,18 +20,6 @@ type Response struct {
 	Response    cieloDTO.TransactionResponse
 	Transaction schemas.Transaction
 }
-
-// @BasePath /api/v1
-
-// @Summary Create Transaction
-// @Description Create a transaction
-// @Tags Transactions
-// @Accept json
-// @Produce json
-// @Param request body CreateTransactionDTO
-// @Success 200 {object} Response
-// @Failure 400 {object} ErrorResponse
-// @Router /transaction [post]
 
 func CreateTransactionHandler(ctx *gin.Context) {
 	request := dtos.CreateTransactionDTO{}
@@ -46,7 +31,7 @@ func CreateTransactionHandler(ctx *gin.Context) {
 		return
 	}
 
-	decryptedBody, err := decryptBody(encryptedBody)
+	decryptedBody, err := helpers.DecryptBody(encryptedBody)
 	if err != nil {
 		logger.Errf("error decrypting request body: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, "error decrypting request body")
@@ -67,14 +52,14 @@ func CreateTransactionHandler(ctx *gin.Context) {
 		return
 	}
 
-	card, err := createCardtoken(request, ctx)
+	card, err := CreateCardtoken(request, ctx)
 	if err != nil {
 		logger.Errf("error creating card token: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	payment, err := createPayment(request, card, ctx)
+	payment, err := CreatePayment(request, card)
 	if err != nil {
 		logger.Errf("error creating payment token: %v", err.Error())
 		sendError(ctx, http.StatusInternalServerError, err.Error())
@@ -106,33 +91,7 @@ func CreateTransactionHandler(ctx *gin.Context) {
 	sendSuccess(ctx, "transaction processed", obj, http.StatusCreated)
 }
 
-func decryptBody(encryptedBody []byte) ([]byte, error) {
-
-	secret := os.Getenv("SECRET")
-
-	key := []byte(secret)
-
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-
-	decodedBody, err := base64.URLEncoding.DecodeString(string(encryptedBody))
-	if err != nil {
-		return nil, err
-	}
-
-	decryptedBody := make([]byte, len(decodedBody)-aes.BlockSize)
-	iv := decodedBody[:aes.BlockSize]
-	encrypted := decodedBody[aes.BlockSize:]
-
-	stream := cipher.NewCFBDecrypter(block, iv)
-	stream.XORKeyStream(decryptedBody, encrypted)
-
-	return decryptedBody, nil
-}
-
-func createCardtoken(request dtos.CreateTransactionDTO, ctx *gin.Context) (cieloDTO.CardAPIResponse, error) {
+func CreateCardtoken(request dtos.CreateTransactionDTO, ctx *gin.Context) (cieloDTO.CardAPIResponse, error) {
 
 	card := cieloDTO.CreditCardDto{
 		CustomerName:   request.Holder,
@@ -150,7 +109,7 @@ func createCardtoken(request dtos.CreateTransactionDTO, ctx *gin.Context) (cielo
 	return response, nil
 }
 
-func createPayment(request dtos.CreateTransactionDTO, card cieloDTO.CardAPIResponse, ctx *gin.Context) (cieloDTO.TransactionResponse, error) {
+func CreatePayment(request dtos.CreateTransactionDTO, card cieloDTO.CardAPIResponse) (cieloDTO.TransactionResponse, error) {
 	payment := cieloDTO.PaymentRequest{
 		Customer: cieloDTO.Customer{
 			Name: request.Customer.Name,

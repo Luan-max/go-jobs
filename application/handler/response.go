@@ -3,7 +3,7 @@ package handler
 import (
 	"fmt"
 
-	"github.com/Luan-max/go-jobs/schemas"
+	"github.com/Luan-max/go-jobs/application/schemas"
 	"github.com/gin-gonic/gin"
 )
 

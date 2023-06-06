@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"github.com/Luan-max/go-jobs/config"
+	"github.com/Luan-max/go-jobs/infra/config"
+	"github.com/Luan-max/go-jobs/infra/database"
 	"gorm.io/gorm"
 )
 
@@ -12,5 +13,5 @@ var (
 
 func InitHandler() {
 	logger = config.GetLogger("handler")
-	db = config.GetSQLite()
+	db = database.GetSQLite()
 }

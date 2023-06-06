@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Luan-max/go-jobs/config"
+	"github.com/Luan-max/go-jobs/infra/config"
 
-	"github.com/Luan-max/go-jobs/integrations/helpers"
+	"github.com/Luan-max/go-jobs/application/integrations/helpers"
 
-	"github.com/Luan-max/go-jobs/integrations/cielo/dtos"
+	"github.com/Luan-max/go-jobs/application/integrations/cielo/dtos"
 )
 
 func CreateCardToken(card dtos.CreditCardDto) (dtos.CardAPIResponse, error) {

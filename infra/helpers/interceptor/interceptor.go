@@ -18,7 +18,7 @@ type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
 
 func EncryptInterceptor() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Ler o corpo da solicitação original
+
 		body, err := c.GetRawData()
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error())
@@ -26,7 +26,6 @@ func EncryptInterceptor() gin.HandlerFunc {
 			return
 		}
 
-		// Criptografar o corpo usando um algoritmo de criptografia
 		encryptedBody, err := encryptBody(body)
 		if err != nil {
 			c.String(http.StatusInternalServerError, err.Error())
@@ -34,7 +33,6 @@ func EncryptInterceptor() gin.HandlerFunc {
 			return
 		}
 
-		// Definir o corpo criptografado na solicitação
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(encryptedBody))
 		c.Request.ContentLength = int64(len(encryptedBody))
 		c.Header("Content-Type", "application/json")
@@ -43,19 +41,16 @@ func EncryptInterceptor() gin.HandlerFunc {
 	}
 }
 
-// Rota de exemplo que exibe o corpo da solicitação.
 func readBody(body io.Reader) string {
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(body)
 	return buf.String()
 }
 
-// Função auxiliar para criptografar o corpo.
 func encryptBody(body []byte) ([]byte, error) {
 
 	secret := os.Getenv("SECRET")
 
-	// Chave de criptografia
 	key := []byte(secret)
 
 	block, err := aes.NewCipher(key)

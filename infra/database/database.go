@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"fmt"
@@ -8,7 +8,6 @@ import (
 
 var (
 	db     *gorm.DB
-	logger *Logger
 )
 
 func Init() error {
@@ -27,7 +26,3 @@ func GetSQLite() *gorm.DB {
 	return db
 }
 
-func GetLogger(p string) *Logger {
-	logger = NewLogger(p)
-	return logger
-}
