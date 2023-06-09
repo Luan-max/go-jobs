@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/Luan-max/go-jobs/application/handler"
 	"github.com/Luan-max/go-jobs/docs"
-	"github.com/Luan-max/go-jobs/infra/helpers/interceptor"
+	"github.com/Luan-max/go-jobs/infra/http/helpers/interceptor"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
